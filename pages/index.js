@@ -5,6 +5,8 @@ import { getSortedPostsData } from '@/lib/posts';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { request } from '@/lib/datocms';
+import { useAppContext } from '@/context/AppContext';
+import { useMemo } from 'react';
 
 const Title = styled.h1`
   color: red;
@@ -45,7 +47,7 @@ export async function getStaticProps() {
     query: HOMEPAGE_QUERY,
     variables: { limit: 10 },
   });
-  console.log('post', post)
+  console.log('post', post);
   return {
     props: {
       allPostsData,
@@ -55,6 +57,7 @@ export async function getStaticProps() {
 }
 
 export default function Home({ allPostsData, post }) {
+  const AppContext = useAppContext();
   return (
     <Layout home>
       <Head>
@@ -85,17 +88,23 @@ export default function Home({ allPostsData, post }) {
           ))}
         </ul>
       </section>
-      <hr/>
-      <h1>
-        Content from DatoCMS
-      </h1>
+      <hr />
       <section>
+        <h1>Content from DatoCMS</h1>
         {post.allPosts.map((value, idx) => (
           <div key={idx}>
-            <div>Tile:{(' ')}{value.title}</div>
-            <div>Slug:{(' ')}{value.slug}</div>
+            <div>Tile: {value.title}</div>
+            <div>Slug: {value.slug}</div>
           </div>
         ))}
+      </section>
+      <hr />
+      <section>
+        <h1>Content from Context</h1>
+        <div>Count: {AppContext.state.count}</div>
+        <button onClick={() => AppContext.action.incrementCount()}>
+          Increment
+        </button>
       </section>
     </Layout>
   );

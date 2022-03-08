@@ -1,12 +1,20 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const AppContext = createContext();
 
 export function AppWrapper({ children }) {
-  let sharedState = {/* whatever you want */}
+  const [count, setCount] = useState(0)
+  let appState = {
+    state: {
+      count: count,
+    },
+    action: {
+      incrementCount: () => setCount(count + 1)
+    }
+  }
 
   return (
-    <AppContext.Provider value={sharedState}>
+    <AppContext.Provider value={appState}>
       {children}
     </AppContext.Provider>
   );
