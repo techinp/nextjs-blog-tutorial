@@ -1,23 +1,77 @@
 import Head from 'next/head';
-import Layout, { siteTitle } from '../components/layout';
-import utilStyles from '../styles/utils.module.css';
-import { getSortedPostsData } from '../lib/posts';
+import Layout, { siteTitle } from '@/components/layout';
+import utilStyles from '@/styles/utils.module.css';
+import { getSortedPostsData } from '@/lib/posts';
+import Link from 'next/link';
+import styled from 'styled-components';
+import { request } from '@/lib/datocms';
+
+const Title = styled.h1`
+  color: red;
+`;
+
+const Test = styled.div`
+  width: 200px;
+  height: 200px;
+  background-color: black;
+`;
+
+const HOMEPAGE_QUERY = `query HomePage{
+  _allAuthorsMeta {
+    count
+  }
+  allPosts {
+    slug
+    title
+    excerpt
+    id
+    date
+    content
+    coverImage {
+      width
+      url
+      title
+      tags
+      smartTags
+      size
+    }
+  }
+}
+`;
+
+// export async function getStaticProps() {
+//   const data = await request({
+//     query: HOMEPAGE_QUERY,
+//     variables: { limit: 10 },
+//   });
+//   return {
+//     props: { data },
+//   };
+// }
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
+  const data = await request({
+    query: HOMEPAGE_QUERY,
+    variables: { limit: 10 },
+  });
+  console.log('data', data)
   return {
     props: {
       allPostsData,
+      data,
     },
   };
 }
 
-export default function Home({ allPostsData }) {
+export default function Home({ allPostsData, data }) {
   return (
     <Layout home>
       <Head>
         <title>{siteTitle}</title>
       </Head>
+      <Title>My First Next.js Page</Title>
+      <Test />
       <section className={utilStyles.headingMd}>
         <p>[Your Self Introduction]</p>
         <p>
@@ -30,11 +84,13 @@ export default function Home({ allPostsData }) {
         <ul className={utilStyles.list}>
           {allPostsData.map(({ id, date, title }) => (
             <li className={utilStyles.listItem} key={id}>
-              {title}
+              <Link href={`/posts/${id}`}>
+                <a>{title}</a>
+              </Link>
               <br />
-              {id}
-              <br />
-              {date}
+              <small className={utilStyles.lightText}>
+                <Date dateString={date} />
+              </small>
             </li>
           ))}
         </ul>

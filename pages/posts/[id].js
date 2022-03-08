@@ -1,7 +1,7 @@
-import Layout from '../../components/layout';
-import { getAllPostIds, getPostData } from '../../lib/posts';
+import Layout from '@/components/layout';
+import { getAllPostIds, getPostData } from '@/lib/posts';
 import Head from 'next/head';
-import utilStyles from '../../styles/utils.module.css';
+import utilStyles from '@/styles/utils.module.css';
 
 export default function Post({ postData }) {
   return (
@@ -23,7 +23,6 @@ export default function Post({ postData }) {
 export async function getStaticPaths() {
   // Return a list of possible value for id
   const paths = getAllPostIds();
-  console.log('paths', paths);
   return {
     paths,
     fallback: false,
@@ -31,7 +30,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  console.log('params', params);
   const postData = await getPostData(params.id);
   return {
     props: {

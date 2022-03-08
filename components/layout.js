@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from './layout.module.css'
-import utilStyles from '../styles/utils.module.css'
+import utilStyles from '@/styles/utils.module.css'
 import Link from 'next/link'
-import profileImg from '../public/images/profile.jpeg'
+import profileImg from '@/public/images/profile.jpeg'
 
 const name = 'Your Name'
 export const siteTitle = 'Next.js Sample Website'
