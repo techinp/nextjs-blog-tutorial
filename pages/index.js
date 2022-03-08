@@ -39,32 +39,22 @@ const HOMEPAGE_QUERY = `query HomePage{
 }
 `;
 
-// export async function getStaticProps() {
-//   const data = await request({
-//     query: HOMEPAGE_QUERY,
-//     variables: { limit: 10 },
-//   });
-//   return {
-//     props: { data },
-//   };
-// }
-
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
-  const data = await request({
+  const post = await request({
     query: HOMEPAGE_QUERY,
     variables: { limit: 10 },
   });
-  console.log('data', data)
+  console.log('post', post)
   return {
     props: {
       allPostsData,
-      data,
+      post,
     },
   };
 }
 
-export default function Home({ allPostsData, data }) {
+export default function Home({ allPostsData, post }) {
   return (
     <Layout home>
       <Head>
@@ -94,6 +84,18 @@ export default function Home({ allPostsData, data }) {
             </li>
           ))}
         </ul>
+      </section>
+      <hr/>
+      <h1>
+        Content from DatoCMS
+      </h1>
+      <section>
+        {post.allPosts.map((value, idx) => (
+          <div key={idx}>
+            <div>Tile:{(' ')}{value.title}</div>
+            <div>Slug:{(' ')}{value.slug}</div>
+          </div>
+        ))}
       </section>
     </Layout>
   );
