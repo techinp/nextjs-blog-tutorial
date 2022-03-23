@@ -1,92 +1,56 @@
 import Head from 'next/head';
-import Layout, { siteTitle } from '@/components/layout';
+import Layout, { siteTitle } from '@/components/layout/layout';
 import utilStyles from '@/styles/utils.module.css';
-import { getSortedPostsData } from '@/lib/posts';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { request } from '@/lib/datocms';
+import markdownToHtml from '@/lib/markdownToHtml';
 import { useAppContext } from '@/context/AppContext';
-import { useMemo } from 'react';
+import { useRouter } from 'next/router';
+import { getPosts } from '@/lib/graphql/posts';
+import { getGames } from '@/lib/graphql/games';
 
 const Title = styled.h1`
   color: red;
 `;
 
-const Test = styled.div`
-  width: 200px;
-  height: 200px;
-  background-color: black;
-`;
-
-const HOMEPAGE_QUERY = `query HomePage{
-  _allAuthorsMeta {
-    count
-  }
-  allPosts {
-    slug
-    title
-    excerpt
-    id
-    date
-    content
-    coverImage {
-      width
-      url
-      title
-      tags
-      smartTags
-      size
-    }
-  }
-}
-`;
-
 export async function getStaticProps() {
-  const allPostsData = getSortedPostsData();
-  const post = await request({
-    query: HOMEPAGE_QUERY,
-    variables: { limit: 10 },
-  });
-  console.log('post', post);
+  const post = await getPosts();
+  const game = await getGames();
   return {
     props: {
-      allPostsData,
       post,
+      game,
     },
   };
 }
 
-export default function Home({ allPostsData, post }) {
+export default function Home({ post, game }) {
   const AppContext = useAppContext();
+  const { locale, locales, asPath } = useRouter();
   return (
     <Layout home>
       <Head>
         <title>{siteTitle}</title>
       </Head>
       <Title>My First Next.js Page</Title>
-      <Test />
+      <div>Current Locale: {locale}</div>
+      <div>
+        {locales.map((l, i) => {
+          return (
+            <div key={i}>
+              <Link href={asPath} locale={l}>
+                {l}
+              </Link>
+            </div>
+          );
+        })}
+      </div>
       <section className={utilStyles.headingMd}>
         <p>[Your Self Introduction]</p>
         <p>
           (This is a sample website - you’ll be building a site like this on{' '}
           <a href='https://nextjs.org/learn'>our Next.js tutorial</a>.)
         </p>
-      </section>
-      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
-        <h2 className={utilStyles.headingLg}>Blog</h2>
-        <ul className={utilStyles.list}>
-          {allPostsData.map(({ id, date, title }) => (
-            <li className={utilStyles.listItem} key={id}>
-              <Link href={`/posts/${id}`}>
-                <a>{title}</a>
-              </Link>
-              <br />
-              <small className={utilStyles.lightText}>
-                <Date dateString={date} />
-              </small>
-            </li>
-          ))}
-        </ul>
       </section>
       <hr />
       <section>
@@ -96,6 +60,15 @@ export default function Home({ allPostsData, post }) {
             <div>Tile: {value.title}</div>
             <div>Slug: {value.slug}</div>
           </div>
+        ))}
+        <hr />
+        {game.allGames.map((value, idx) => (
+          <section key={idx} className='px-8'>
+            <div>ID: {value.id}</div>
+            <div>Name: {value.name}</div>
+            <div>Provider: {value.provider}</div>
+            <hr />
+          </section>
         ))}
       </section>
       <hr />
