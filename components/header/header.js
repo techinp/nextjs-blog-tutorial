@@ -15,7 +15,7 @@ export default function Header({}) {
       <section>
         <div>The current theme is: {theme}</div>
         <Button style={{ marginLeft: 8 }} onClick={() => setTheme('light')}>
-          Light mode
+          <div>Light mode</div>
         </Button>
         <Button style={{ marginLeft: 8 }} onClick={() => setTheme('dark')}>
           Dark mode

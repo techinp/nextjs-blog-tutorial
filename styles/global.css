@@ -11,9 +11,9 @@
 }
 
 [data-theme='dark'] {
-  --bg-primary: #0c0c0c;
-  --bg-secondary: #303030;
-  --fontColor: #ffffff;
+  --bg-primary: #292929;
+  --bg-secondary: #242424;
+  --fontColor: #F3F5F6;
 }
 
 html,

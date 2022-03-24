@@ -8,14 +8,16 @@ import { useAppContext } from '@/context/AppContext';
 import { useRouter } from 'next/router';
 import { getPosts } from '@/lib/graphql/posts';
 import { getGames } from '@/lib/graphql/games';
+import Container from '@/components/container';
 
 const Title = styled.h1`
   color: red;
 `;
 
-export async function getStaticProps() {
+export async function getStaticProps({ locale }) {
+  console.log('locale', locale);
   const post = await getPosts();
-  const game = await getGames();
+  const game = await getGames(locale);
   return {
     props: {
       post,
@@ -25,6 +27,7 @@ export async function getStaticProps() {
 }
 
 export default function Home({ post, game }) {
+  console.log('game', game);
   const AppContext = useAppContext();
   const { locale, locales, asPath } = useRouter();
   return (
@@ -32,28 +35,31 @@ export default function Home({ post, game }) {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <Title>My First Next.js Page</Title>
-      <div>Current Locale: {locale}</div>
-      <div>
-        {locales.map((l, i) => {
-          return (
-            <div key={i}>
-              <Link href={asPath} locale={l}>
-                {l}
-              </Link>
-            </div>
-          );
-        })}
-      </div>
-      <section className={utilStyles.headingMd}>
-        <p>[Your Self Introduction]</p>
-        <p>
-          (This is a sample website - you’ll be building a site like this on{' '}
-          <a href='https://nextjs.org/learn'>our Next.js tutorial</a>.)
-        </p>
-      </section>
-      <hr />
-      <section>
+      <Container>
+        <Title>My First Next.js Page</Title>
+        <div>Current Locale: {locale}</div>
+        <div>
+          {locales.map((l, i) => {
+            return (
+              <div key={i}>
+                <Link href={asPath} locale={l}>
+                  {l}
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+        <section>
+          {game.allGames.map((value, idx) => (
+            <section key={idx} className='px-8'>
+              <div>ID: {value.id}</div>
+              <div>Name: {value.name}</div>
+              <div>Provider: {value.provider}</div>
+              <hr />
+            </section>
+          ))}
+        </section>
+        {/* <section>
         <h1>Content from DatoCMS</h1>
         {post.allPosts.map((value, idx) => (
           <div key={idx}>
@@ -78,7 +84,8 @@ export default function Home({ post, game }) {
         <button onClick={() => AppContext.action.incrementCount()}>
           Increment
         </button>
-      </section>
+      </section> */}
+      </Container>
     </Layout>
   );
 }

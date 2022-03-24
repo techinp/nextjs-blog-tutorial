@@ -9,9 +9,8 @@ export default function Layout({ children, home }) {
   return (
     <div>
       <Meta />
-      {/* <LayoutStyled.Title>Test2</LayoutStyled.Title> */}
       <Header />
-      {/* <main>{children}</main> */}
+      <main className={styles.main}>{children}</main>
     </div>
   );
 }
