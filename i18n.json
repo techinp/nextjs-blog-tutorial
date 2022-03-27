@@ -1,0 +1,7 @@
+{
+  "locales": ["th", "en", "cn", "my"],
+  "defaultLocale": "th",
+  "pages": {
+    "*": ["common"]
+  }
+}
